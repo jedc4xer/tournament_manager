@@ -1,6 +1,7 @@
 import os
 import requests
 import string
+import time
 
 # Clean the screen
 clear_term = "cls||clear"
@@ -217,11 +218,11 @@ def sort_participants(reg_list, sort_parameter, sort_direction):
 def display_slot(registrations):
     passed = False
     while not passed:
-        which_slot = input(f"      Pick a Slot [1-{len(registrations)}]: >>")
+        which_slot = input(f"      Pick a Slot [1-{len(registrations)}]: >> ")
         passed = check_input(which_slot, "number", len(registrations))
     which_slot = int(which_slot)
     for key in registrations.keys():
-        if which_slot < key + 5 and which_slot > key - 5:
+        if which_slot < key + 6 and which_slot > key - 6:
             name = (
                 str(registrations[key]["First Name"])
                 + " "
@@ -241,7 +242,6 @@ def view_participants(registrations):
     while not outer_passed:
         os.system(clear_term)
         print(statements[5], statements[11], errors, "\n")
-        print("******* CURRENTLY IN DEVELOPMENT **********")
         errors = None
         reverse_sort = False
         passed = False
@@ -261,7 +261,7 @@ def view_participants(registrations):
         if option == 1:
             display_slot(registrations)
         elif option == 2:
-            errors = "\nThis option has not yet been coded"
+            errors = "\n\nThis option has not yet been coded"
         elif option == 3:
             reg_list = convert_dict_to_list(registrations)
             reg_list = [
@@ -307,17 +307,21 @@ def save_menu(registrations, tournament):
     to_write = convert_dict_to_list(registrations)
     to_write.insert(0, "slot,First Name,Last Name")
     tournament = tournament.replace(" ", "-")
+    print("\n      Saving...")
+    time.sleep(1)
     with open(f"{tournament}_registrations.csv", "w") as file:
         file.write("\n".join(to_write))
         file.close()
     saved = True
+    print("\n      Save Successful")
+    time.sleep(2)
     return saved
 
 
-def exit_menu(unsaved_changes):
+def exit_menu(saved):
     os.system(clear_term)
     print(statements[7])
-    if unsaved_changes:
+    if not saved:
         print("      Any unsaved changes will be lost.")
     confirm = input("      Are you sure you want to exit? [y/n] >> ")
     if confirm.lower() == "y":
