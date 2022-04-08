@@ -1,0 +1,50 @@
+                                       
+      ************* Tournament Manager *************
+      ============================================== 
+,
+      ************* Tournament Manager *************
+      |                 MAIN MENU                  |
+      ==============================================    
+,      1. Sign Up
+      2. Cancel Sign Up
+      3. View Participants
+      4. Save Changes
+      5. Exit
+,
+      ************* Tournament Manager *************
+      |           MAIN MENU  -->  Sign Up          |
+      ==============================================    
+,
+      ************* Tournament Manager *************
+      |     MAIN MENU  -->  Cancel Registration    |
+      ==============================================
+,
+      ************* Tournament Manager *************
+      |       MAIN MENU  -->  View Participants    |
+      ==============================================
+,
+      ************* Tournament Manager *************
+      |         MAIN MENU  -->  Save Changes       |
+      ==============================================
+,
+      ************* Tournament Manager *************
+      |            MAIN MENU  -->  Exit            |
+      ==============================================
+,                                 
+      ****************** GOODBYE!! *****************
+      ============================================== 
+,      1. Create New
+      2. Load Existing
+,      No Allowed Files Found
+
+      Ensure that a registrations file is in the active
+      directory and start this program again.
+      
+      Otherwise create a new tournament.
+,    
+      1. Display Slot     
+      2. Find a Participant
+      3. Sort by First Name
+      4. Sort by Last Name
+      5. Sort by Slot
+      6. Back to Main Menu
