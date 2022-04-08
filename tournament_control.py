@@ -261,7 +261,7 @@ def view_participants(registrations):
         if option == 1:
             display_slot(registrations)
         elif option == 2:
-            print("This option has not yet been coded")
+            errors = "\nThis option has not yet been coded"
         elif option == 3:
             reg_list = convert_dict_to_list(registrations)
             reg_list = [
