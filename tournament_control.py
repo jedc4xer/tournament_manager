@@ -8,14 +8,15 @@ os.system(clear_term)
 
 # Get text print blocks from template file
 def get_statements():
-    path = "https://raw.githubusercontent.com/jedc4xer/python_exercises/main/tournament_statements.txt"
+    path = "https://raw.githubusercontent.com/jedc4xer/tournament_manager/main/tournament_statements.txt"
     statements = requests.get(path).text.split(",")
     return statements
+
 
 # Determine if new tournament or loading existing
 def get_tournament_info():
     print(statements[0])
-    
+
     # Check for registration files in directory
     possible_files = [_ for _ in os.listdir() if "registrations.csv" in _]
     allow_choosing = True if len(possible_files) > 0 else False
@@ -48,12 +49,12 @@ def get_tournament_info():
             for slot in range(1, num_slots + 1)
         }
     else:
-        print("      File Options")
+        print("\n      File Options")
         for i, item in enumerate(possible_files):
             print(f"      {i+1}. {item}")
         passed = False
         while not passed:
-            picked_file = input("      Choose which file to load: >> ")
+            picked_file = input("\n      Choose which file to load: >> ")
             passed = check_input(picked_file, "number", len(possible_files))
         file_path = possible_files[int(picked_file) - 1]
 
@@ -64,10 +65,10 @@ def get_tournament_info():
         new_data = [_.split(",") for _ in data][1:]
         registrations = {}
         for i, item in enumerate(new_data):
-            first = None if item[1] == 'None' else item[1]
-            second = None if item[2] == 'None' else item[2]
+            first = None if item[1] == "None" else item[1]
+            second = None if item[2] == "None" else item[2]
             registrations[int(item[0])] = {"First Name": first, "Last Name": second}
-        tournament = file_path.replace("_registrations.csv","").replace("-"," ")
+        tournament = file_path.replace("_registrations.csv", "").replace("-", " ")
 
     return registrations, tournament
 
@@ -98,9 +99,8 @@ def check_input(input_string, requirement, limit):
 
 
 def main_menu(registrations, tournament):
-    # registrations = {slot: None for slot in range(1, num_slots + 1)}
+
     num_slots = len(registrations)
-    # available_slots = num_slots
     outer_passed = False
     while not outer_passed:
         available_slots = num_slots - len(
@@ -115,7 +115,6 @@ def main_menu(registrations, tournament):
 
         passed = False
         while not passed:
-            print(registrations)
             menu_option = input("      Please choose a task: >> ")
             passed = check_input(menu_option, "number", 5)
         menu_option = int(menu_option)
@@ -196,66 +195,97 @@ def deregister_menu(registrations):
 
     return registrations, False
 
-def sort_participants(reg_list,sort_parameter, sort_direction):
+
+def sort_participants(reg_list, sort_parameter, sort_direction):
     sorted_reg = sorted(
-        reg_list, key=lambda x: x[sort_parameter], reverse = sort_direction
+        reg_list, key=lambda x: x[sort_parameter], reverse=sort_direction
     )
-                
-    sorted_reg_string = (
-        "\n".join(str(_[0]) + ": " + _[1] + " " + _[2] for _ in sorted_reg)
+
+    sorted_reg_string = "\n".join(
+        str(_[0]) + ": " + _[1] + " " + _[2] for _ in sorted_reg
     )
-    sorted_reg_string = sorted_reg_string.replace("None None","[empty]")
+    sorted_reg_string = sorted_reg_string.replace("None None", "[empty]")
     print(sorted_reg_string)
-    
+
     passed = False
     while not passed:
-        passed = True if input("Go Back: (y/n) >> ").lower() == 'y' else False
+        passed = True if input("      Go Back: (y/n) >> ").lower() == "y" else False
     return
+
+
+def display_slot(registrations):
+    passed = False
+    while not passed:
+        which_slot = input(f"      Pick a Slot [1-{len(registrations)}]: >>")
+        passed = check_input(which_slot, "number", len(registrations))
+    which_slot = int(which_slot)
+    for key in registrations.keys():
+        if which_slot < key + 5 and which_slot > key - 5:
+            name = (
+                str(registrations[key]["First Name"])
+                + " "
+                + str(registrations[key]["Last Name"])
+            )
+            name = "[empty]" if name == "None None" else name
+            print(f"      {key}: {name}")
+    passed = False
+    while not passed:
+        passed = True if input("\n      Go Back: (y/n) >> ").lower() == "y" else False
+    return
+
 
 def view_participants(registrations):
     errors = None
     outer_passed = False
     while not outer_passed:
         os.system(clear_term)
-        print(statements[5], statements[11], errors,'\n')
+        print(statements[5], statements[11], errors, "\n")
         print("******* CURRENTLY IN DEVELOPMENT **********")
         errors = None
         reverse_sort = False
         passed = False
         while not passed:
-            option = input('Choose an option: (include "a" for ascending)>> ')
-            
+            option = input(
+                '      Choose an option:\n      (add "a" to change sort) >> '
+            )
+
             # Check for directional adjustment
-            if 'a' in option.lower():
-                option = option.replace('a','')
+            if "a" in option.lower():
+                option = option.replace("a", "")
                 reverse_sort = True
-                
-            passed = check_input(option, 'number', 6)
+
+            passed = check_input(option, "number", 6)
         option = int(option)
-        
+
         if option == 1:
-            print('This option has not yet been coded')
+            display_slot(registrations)
         elif option == 2:
-            print('This option has not yet been coded')
+            print("This option has not yet been coded")
         elif option == 3:
             reg_list = convert_dict_to_list(registrations)
-            reg_list = [[int(_.split(",")[0]),_.split(",")[1],_.split(",")[2]] for _ in reg_list]
+            reg_list = [
+                [int(_.split(",")[0]), _.split(",")[1], _.split(",")[2]]
+                for _ in reg_list
+            ]
             sort_participants(reg_list, 1, reverse_sort)
         elif option == 4:
             reg_list = convert_dict_to_list(registrations)
-            reg_list = [[int(_.split(",")[0]),_.split(",")[1],_.split(",")[2]] for _ in reg_list]
+            reg_list = [
+                [int(_.split(",")[0]), _.split(",")[1], _.split(",")[2]]
+                for _ in reg_list
+            ]
             sort_participants(reg_list, 2, reverse_sort)
         elif option == 5:
             reg_list = convert_dict_to_list(registrations)
-            reg_list = [[int(_.split(",")[0]),_.split(",")[1],_.split(",")[2]] for _ in reg_list]
+            reg_list = [
+                [int(_.split(",")[0]), _.split(",")[1], _.split(",")[2]]
+                for _ in reg_list
+            ]
             sort_participants(reg_list, 0, reverse_sort)
         elif option == 6:
             return
         else:
             errors = "You did not pick a valid option."
-
-
-    
 
 
 def convert_dict_to_list(registrations):
