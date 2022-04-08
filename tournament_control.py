@@ -102,6 +102,7 @@ def main_menu(registrations, tournament):
 
     num_slots = len(registrations)
     outer_passed = False
+    saved = False
     while not outer_passed:
         available_slots = num_slots - len(
             [_ for _ in registrations.keys() if registrations[_]["First Name"] != None]
