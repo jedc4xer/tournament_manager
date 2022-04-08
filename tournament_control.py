@@ -23,6 +23,7 @@ def get_tournament_info():
     allow_choosing = True if len(possible_files) > 0 else False
     print(statements[9]) if allow_choosing else print(statements[10])
 
+    # User Input Loop
     passed = False
     while not passed:
         if allow_choosing:
@@ -74,6 +75,7 @@ def get_tournament_info():
     return registrations, tournament
 
 
+# Check if input matches requirements
 def check_input(input_string, requirement, limit):
     if requirement == "number":
         if input_string.isnumeric():
@@ -99,6 +101,60 @@ def check_input(input_string, requirement, limit):
     return passed
 
 
+# Sort Displayed Participant List
+def sort_participants(reg_list, sort_parameter, sort_direction):
+    sorted_reg = sorted(
+        reg_list, key=lambda x: x[sort_parameter], reverse=sort_direction
+    )
+    z = "      "
+    sorted_reg_string = "\n".join(
+        z + str(_[0]) + ": " + _[1] + " " + _[2] for _ in sorted_reg
+    )
+    sorted_reg_string = sorted_reg_string.replace("None None", "[empty]")
+    print(sorted_reg_string)
+
+    passed = False
+    while not passed:
+        passed = True if input("      Go Back: (y/n) >> ").lower() == "y" else False
+    return
+
+
+# Display slot and surroundings
+def display_slot(registrations):
+    passed = False
+    while not passed:
+        which_slot = input(f"      Pick a Slot [1-{len(registrations)}]: >> ")
+        passed = check_input(which_slot, "number", len(registrations))
+    which_slot = int(which_slot)
+    for key in registrations.keys():
+        if which_slot < key + 6 and which_slot > key - 6:
+            name = (
+                str(registrations[key]["First Name"])
+                + " "
+                + str(registrations[key]["Last Name"])
+            )
+            name = "[empty]" if name == "None None" else name
+            print(f"      {key}: {name}")
+    passed = False
+    while not passed:
+        passed = True if input("\n      Go Back: (y/n) >> ").lower() == "y" else False
+    return
+
+
+# Convert dictionary to list
+def convert_dict_to_list(registrations):
+    registration_list = [
+        str(key)
+        + ","
+        + str(registrations[key]["First Name"])
+        + ","
+        + str(registrations[key]["Last Name"])
+        for key in registrations.keys()
+    ]
+    return registration_list
+
+
+# ********* MENU FUNCTIONS ************
 def main_menu(registrations, tournament):
 
     num_slots = len(registrations)
@@ -109,17 +165,22 @@ def main_menu(registrations, tournament):
             [_ for _ in registrations.keys() if registrations[_]["First Name"] != None]
         )
         os.system(clear_term)
+
+        # Display Menu and Tournament Summary
         print(statements[1])
         print(
             f"      Available Slots: {available_slots}\n      Filled Slots: {num_slots - available_slots}\n"
         )
         print(statements[2])
 
+        # User Input Loop
         passed = False
         while not passed:
             menu_option = input("      Please choose a task: >> ")
             passed = check_input(menu_option, "number", 5)
         menu_option = int(menu_option)
+
+        # Picked Option Control
         if menu_option == 1:
             registrations, saved = sign_up_menu(registrations)
         elif menu_option == 2:
@@ -167,7 +228,10 @@ def deregister_menu(registrations):
     print(statements[4])
     passed = False
     while not passed:
+        print("      To return to main menu, type 'back'")
         current_slot = input(f"      Current Slot [1-{len(registrations)}]: >> ")
+        if current_slot.lower() == 'back':
+            return registrations, False
         name = input("      Participant Name: >> ")
         passed = check_input(current_slot, "number", len(registrations))
         if passed:
@@ -196,44 +260,6 @@ def deregister_menu(registrations):
                 passed = False
 
     return registrations, False
-
-
-def sort_participants(reg_list, sort_parameter, sort_direction):
-    sorted_reg = sorted(
-        reg_list, key=lambda x: x[sort_parameter], reverse=sort_direction
-    )
-
-    sorted_reg_string = "\n".join(
-        str(_[0]) + ": " + _[1] + " " + _[2] for _ in sorted_reg
-    )
-    sorted_reg_string = sorted_reg_string.replace("None None", "[empty]")
-    print(sorted_reg_string)
-
-    passed = False
-    while not passed:
-        passed = True if input("      Go Back: (y/n) >> ").lower() == "y" else False
-    return
-
-
-def display_slot(registrations):
-    passed = False
-    while not passed:
-        which_slot = input(f"      Pick a Slot [1-{len(registrations)}]: >> ")
-        passed = check_input(which_slot, "number", len(registrations))
-    which_slot = int(which_slot)
-    for key in registrations.keys():
-        if which_slot < key + 6 and which_slot > key - 6:
-            name = (
-                str(registrations[key]["First Name"])
-                + " "
-                + str(registrations[key]["Last Name"])
-            )
-            name = "[empty]" if name == "None None" else name
-            print(f"      {key}: {name}")
-    passed = False
-    while not passed:
-        passed = True if input("\n      Go Back: (y/n) >> ").lower() == "y" else False
-    return
 
 
 def view_participants(registrations):
@@ -287,18 +313,6 @@ def view_participants(registrations):
             return
         else:
             errors = "You did not pick a valid option."
-
-
-def convert_dict_to_list(registrations):
-    registration_list = [
-        str(key)
-        + ","
-        + str(registrations[key]["First Name"])
-        + ","
-        + str(registrations[key]["Last Name"])
-        for key in registrations.keys()
-    ]
-    return registration_list
 
 
 def save_menu(registrations, tournament):
